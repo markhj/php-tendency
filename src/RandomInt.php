@@ -31,6 +31,6 @@ class RandomInt extends RandomNumber
      */
     protected function interpret(float $computed): int
     {
-        return $this->min + round(($this->max - $this->min) * $computed);
+        return $this->min + (int) round(($this->max - $this->min) * $computed);
     }
 }

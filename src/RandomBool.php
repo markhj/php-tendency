@@ -14,7 +14,7 @@ class RandomBool extends RandomBase
     /**
      * Create a new randomized boolean.
      *
-     * @param float $stdDeviation
+     * @param float $stdDeviation Standard deviation
      */
     public function __construct(
         private readonly float $stdDeviation = 0.5,
@@ -25,7 +25,7 @@ class RandomBool extends RandomBase
      * Retrieve the standard deviation value.
      * If not set, the default of 0.5 is returned.
      *
-     * @return float
+     * @return float Standard deviation
      */
     protected function getStandardDeviation(): float
     {
@@ -36,8 +36,8 @@ class RandomBool extends RandomBase
      * Interpret the computed random value, such that if
      * it's above 0.5, then it's considered true. Otherwise, false.
      *
-     * @param  float $computed
-     * @return bool
+     * @param  float $computed Received computed value
+     * @return bool  Result of randomization as boolean
      */
     protected function interpret(float $computed): bool
     {

@@ -16,8 +16,8 @@ class RandomIntTest extends StandardTestCase
      * inside the ``RandomNumber`` class, when it receives a computed value
      * and selects a number within its min/max range.
      *
-     * @param  int  $min
-     * @param  int  $max
+     * @param  int  $min Min. value
+     * @param  int  $max Max. value
      * @return void
      */
     #[Test]

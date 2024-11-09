@@ -1,17 +1,20 @@
 ![PHP Tendency banner](https://res.cloudinary.com/drfztvfdh/image/upload/v1731160458/opengl.it.com/Github%20splashes/php-tendency_qbl46q.jpg)
 
-**PHP Tendency** is essentially a randomization tool. But it's not the
+![GitHub Tag](https://img.shields.io/github/v/tag/markhj/php-tendency?label=version)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?label=license)
+
+**PHP Tendency** is a random value generator. But it's not the
 one you'd pick to find lottery numbers, rather it's the one you'd choose
-to calculate outcomes in complex scenarios where many factors impact the
-likelihood of certain outcomes.
+to calculate outcomes in complex scenarios, where many factors impact the
+likelihood of an outcome.
 
 ## 💫 Sounds cool, tell me more...
 
-**PHP Tendency** originated during the development of a complex political simulation game,
-in which choices of people, countries and companies should have a degree of randomness,
-but never be _totally_ random.
+**PHP Tendency** originated from the development of a political simulation game,
+in which the choices of people, countries and companies should have a degree of
+randomness, but never be _totally_ random.
 
-The risk that a person commits a crime isn't 50/50. It's determined by personality,
+The risk that a person commits a crime _isn't_ 50/50. It's determined by personality,
 criminal history, how the person was raised, life circumstances, social circles, and so forth.
 
 Implementing such complex determination in code isn't easy, and without the proper
@@ -45,8 +48,7 @@ But... What if that same thing could look like this?
 ````php
 public function shouldCommitCrime(): bool
 {
-    return (new RandomBool())
-        ->extend($this)
+    return $this->randomizer()
         ->hasLow(Personality::Integrity)
         ->hasCriminalRecord()
         // And so forth
@@ -93,7 +95,9 @@ In the _Getting Started_ chapter we'll have a look at the fundamental
 usage of _PHP Tendency_. Take note that the really fun stuff comes in the
 **Extensions** chapter.
 
-There are a set of base classes, called 
+There are a set of base classes called "randomizers".
+Three are bundled out-of-the-box with _PHP Tendency_, but you can
+easily build more on your own, simply by extending ``RandomBase``.
 
 ### Boolean
 
