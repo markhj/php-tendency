@@ -84,7 +84,7 @@ modularity, testability and overview.
 The library is easily installed with Composer:
 
 ````bash
-composer require markhj/php-tendency --repository='{"type": "vcs", "url": "https://github.com/markhj/php-tendency"}'
+composer require markhj/php-tendency
 ````
 
 > Submission to Packagist coming in next version.
