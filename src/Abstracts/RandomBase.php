@@ -14,6 +14,7 @@ use Markhj\PhpTendency\Utilities\RandomizedResult;
 
 abstract class RandomBase implements Extendable
 {
+
     /**
      * Mean generally should be between 0 and 1.
      * However, this isn't strictly enforced, because there are scenarios
@@ -117,13 +118,13 @@ abstract class RandomBase implements Extendable
         //      - But more importantly, if possible, we'd like to avoid
         //          requiring child classes to reference the parent constructor,
         //          as that can lead to confusion when forgotten.
-        if (is_null($this->extensionRegistry)) {
+        if ($this->extensionRegistry === null) {
             $this->extensionRegistry = new ExtensionRegistry();
         }
 
         $this->extensionRegistry->register($instance);
 
-        // Set up a reflection instance so we can retrieve its methods.
+        // Set up a reflection instance, so we can retrieve its methods.
         $class = new \ReflectionClass($instance);
 
         foreach ($class->getMethods() as $method) {

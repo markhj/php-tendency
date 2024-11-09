@@ -13,9 +13,9 @@ class RandomInt extends RandomNumber
      * by narrowing from ``float | int`` to ``int``, thus securing the intention
      * of this class.
      *
-     * @param int   $min
-     * @param int   $max
-     * @param float $stdDeviation
+     * @param int   $min          Min. value
+     * @param int   $max          Max. value
+     * @param float $stdDeviation (Optional) standard deviation
      */
     public function __construct(int $min, int $max, float $stdDeviation = 0.5)
     {
@@ -26,8 +26,8 @@ class RandomInt extends RandomNumber
      * Use the computed as a "percentage-like" indicator to select
      * a value between min and max.
      *
-     * @param  float $computed
-     * @return int
+     * @param  float $computed Computed random value
+     * @return int   Random integer sitting between min. and max.
      */
     protected function interpret(float $computed): int
     {

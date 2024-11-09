@@ -87,8 +87,6 @@ The library is easily installed with Composer:
 composer require markhj/php-tendency
 ````
 
-> Submission to Packagist coming in next version.
-
 ## 🚀 Getting started
 
 In the _Getting Started_ chapter we'll have a look at the fundamental
