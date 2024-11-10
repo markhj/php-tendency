@@ -186,7 +186,7 @@ Example:
 (new RandomFloat(10.0, 25.0, 0.25))->compute();
 ````
 
-Here, the standard deviation is ``0.25``` which corresponds
+Here, the standard deviation is ``0.25`` which corresponds
 to 25% from the mean value.
 
 Learn more:
@@ -278,11 +278,47 @@ is completely guaranteed, which is exactly what we want: _A tendency_.
 A person with a criminal history may have a _tendency_ to commit
 crime, but they don't _always_ do it.
 
-### Tip
-
-Extensions can themselves take parameters. In our crime determination
+> **Tip!** Extensions can themselves take parameters. In our crime determination
 example, we would for instance provide information about the person
 as constructor arguments.
+
+### What about the criminal?
+
+Don't worry, we haven't forgotten our hypothetical criminal.
+
+Let's imagine we 
+
+````php
+class PersonTendency implements Extension
+{
+    public function __construct(
+        private Person $person,
+    ) {
+    }
+
+    #[Expose]
+    public function hasCriminalRecord(Extendable $random): Extendable
+    {
+        $records = getCriminalRecordFromDatabase($this->person);
+        
+        // Increase the likelihood 10% (+0.1) per record 
+        $random->changeMean(count($records) / 10);
+        
+        // You could even look at the severity of the records, and other stuff
+        
+        return $this;
+    }
+}
+````
+
+And where you use this in your actual logic, it would now look like:
+
+````php
+$shouldCommitCrime = (new RandomBool())
+    ->extend(new PersonTendency($somePerson))
+    ->hasCriminalRecord()
+    ->compute();
+````
 
 ## 💝 Working on the project
 
