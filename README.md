@@ -157,8 +157,8 @@ You can sway the mean using these functions:
 
 Keep in mind that ``changeMean`` isn't a _setter_, it increments or decreases.
 
-> The mean value starts at ``0.5``, and is intended to be between
-> 0 and 1 for most use-cases. But this boundary isn't strictly enforced.
+> The mean value starts at ``0.5``, and would be between
+> 0 and 1 for most use-cases. But it's perfectly fine to fall outside of this bound.
 
 ### The ``RandomizedResult`` class
 
@@ -209,6 +209,8 @@ contained in the randomizer (.e.g ``RandomBool`` or ``RandomFloat``).
 The mean value always starts at ``0.5`` (perfectly between ``0.0``
 and ``1.0``), which means the random value gravitates towards
 the middle of whatever you're looking to randomize.
+
+> It's perfectly fine if the mean moves below zero or above one.
 
 If we go back to trying to determine if a person should commit a crime
 or not, then having a criminal history should sway the mean towards
@@ -286,7 +288,7 @@ as constructor arguments.
 
 Don't worry, we haven't forgotten our hypothetical criminal.
 
-Let's imagine we 
+Let's imagine we have an extension class like this:
 
 ````php
 class PersonTendency implements Extension
@@ -297,16 +299,16 @@ class PersonTendency implements Extension
     }
 
     #[Expose]
-    public function hasCriminalRecord(Extendable $random): Extendable
+    public function hasCriminalRecord(Extendable $randomizer): Extendable
     {
         $records = getCriminalRecordFromDatabase($this->person);
         
         // Increase the likelihood 10% (+0.1) per record 
-        $random->changeMean(count($records) / 10);
+        $randomizer->changeMean(count($records) / 10);
         
         // You could even look at the severity of the records, and other stuff
         
-        return $this;
+        return $randomizer;
     }
 }
 ````
@@ -319,6 +321,12 @@ $shouldCommitCrime = (new RandomBool())
     ->hasCriminalRecord()
     ->compute();
 ````
+
+The idea is now that you add tens or hundreds of factors, where each
+factor sways the mean in a direction.
+
+> Keep in mind: It's perfectly acceptable that the mean falls
+> below ``0.0`` (0%) or above ``1.0`` (100%).
 
 ## 💝 Working on the project
 
