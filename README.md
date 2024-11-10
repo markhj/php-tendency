@@ -1,29 +1,30 @@
 ![PHP Tendency banner](https://res.cloudinary.com/drfztvfdh/image/upload/v1731160458/opengl.it.com/Github%20splashes/php-tendency_qbl46q.jpg)
 
 ![GitHub Tag](https://img.shields.io/github/v/tag/markhj/php-tendency?label=version)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/35a85d3ef41d472aa2f63b65bd82f298)](https://app.codacy.com/gh/markhj/php-tendency)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?label=license)
 
 **PHP Tendency** is a random value generator. But it's not the
 one you'd pick to find lottery numbers, rather it's the one you'd choose
-to calculate outcomes in complex scenarios, where many factors impact the
+to calculate complex scenarios, where tens or hundreds of factors impact the
 likelihood of an outcome.
 
-## 💫 Sounds cool, tell me more...
+## 💫 Sounds cool, tell me more
 
-**PHP Tendency** originated from the development of a political simulation game,
-in which the choices of people, countries and companies should have a degree of
-randomness, but never be _totally_ random.
+**PHP Tendency** had its beginning as a "spin-off" from a political simulation game,
+in which the choices of people, countries and companies needed a degree of
+randomness, but never _total_ randomness.
 
 The risk that a person commits a crime _isn't_ 50/50. It's determined by personality,
 criminal history, how the person was raised, life circumstances, social circles, and so forth.
 
 Implementing such complex determination in code isn't easy, and without the proper
-tooling, it's outright cumbersome. Hard to test, hard to predict, and hard to keep
+tooling, it's outright cumbersome: Hard to test, hard to predict, and hard to keep
 in check.
 
-This is the exact problem _PHP Tendency_ sets out to solve. Let's imagine a function
+This is the exact problem _PHP Tendency_ set out to solve. Let's imagine a function
 which calculates the risk of someone committing a crime. For a prototype, most would
-probably tend to do something like this:
+probably do something like:
 
 ````php
 class Person
@@ -62,15 +63,15 @@ and easier to read.
 
 "_But where do all these methods like ``hasLow`` and ``hasCriminalRecord``
 come from?_" What a great question! They come from extensions. Think of them
-as lots of small custom modules you write specifically for your project.
+as custom modules you write specifically for _your_ project.
 We'll get back to that later in this guide. But they basically provide reusability,
-modularity, testability and overview.
+modularity, improved overview, and testability.
 
 ## 🍃 Features
 
-- **Extensible and modular**: Create separate classes which are injected into a scenario
-  on demand.
-- **Biased randomization**: Make certain outcomes more likely than others using
+- **Extensible and modular**: Create separate classes which are injected into
+  a randomizer per an on-demand basis.
+- **Biased outcomes**: Make certain outcomes more likely than others using
   a weight-based randomization (mean + standard deviation).
 - **Several types**: Int, float or bool? Doesn't matter. You can also build your own
   custom randomizer which takes strings, arrays, or specific classes. The sky is the limit.
@@ -89,11 +90,10 @@ composer require markhj/php-tendency
 
 ## 🚀 Getting started
 
-In the _Getting Started_ chapter we'll have a look at the fundamental
-usage of _PHP Tendency_. Take note that the really fun stuff comes in the
-**Extensions** chapter.
+Let's have a look at the fundamental usage of _PHP Tendency_.
+Take note that the really fun stuff comes in the **Extensions** chapter.
 
-There are a set of base classes called "randomizers".
+There are a set of base classes called "**_randomizers_**".
 Three are bundled out-of-the-box with _PHP Tendency_, but you can
 easily build more on your own, simply by extending ``RandomBase``.
 
@@ -135,8 +135,19 @@ use Markhj\PhpTendency\RandomInt;
 
 ### Bias
 
-With all of these classes, you can use ``changeMean``, which
-moves the bias.
+All of these classes sport a ``changeMean`` method, which
+moves the bias. The bias expresses the most likely outcome,
+which by default is ``0.5`` (50%, the middle).
+
+And yes, this also means that if you want a random value between
+0 and 100, getting a number around 50 is more likely than numbers
+close the bounds. Again: This isn't the choice for a lottery
+number, where you'd want an un-biased pick.
+
+However, the trick is that you can move the bias, so if you move
+it to ``0.3`` (30%), then a number around 30 is most likely.
+
+You can sway the mean using these functions:
 
 ````php
 (new RandomBool())->changeMean(-0.25);  // More likely to be false
@@ -151,18 +162,15 @@ Keep in mind that ``changeMean`` isn't a _setter_, it increments or decreases.
 
 ### The ``RandomizedResult`` class
 
-All the randomization classes return an instance of
-``RandomizedResult`` instead of a final value. It provides
-some information on top of the computed random value.
-These values are mainly useful for testing, but should you
-have some reason to use them... Well, they are there.
+Randomizers return an instance of ``RandomizedResult``.
+This object provides some information on top of the computed
+random value. These values are mainly useful for testing, but
+should you have some reason to use them... Well, they are there.
 
-What it contains is:
-
-| Property     | Type      | Description                                                                        |
-|--------------|-----------|------------------------------------------------------------------------------------|
-| ``mean``     | ``float`` | The final mean value used after extensions have manipulated it.                    |
-| ``computed`` | ``float`` | The final computed random value (between 0 and 1).                                 |
+| Property     | Type      | Description                                                                       |
+|--------------|-----------|-----------------------------------------------------------------------------------|
+| ``mean``     | ``float`` | The final mean value used after extensions have manipulated it.                   |
+| ``computed`` | ``float`` | The final computed random value (between ``0.0`` and ``1.0``).                      |
 | ``result``   | ``mixed`` | The actual result, typically a number between X and Y, boolean, or something else. |
 
 
@@ -181,8 +189,6 @@ Example:
 Here, the standard deviation is ``0.25``` which corresponds
 to 25% from the mean value.
 
-> The standard deviation must be given between 0 and 1.
-
 Learn more:
 [Standard deviation on Wikipedia](https://en.wikipedia.org/wiki/Standard_deviation)
 
@@ -191,8 +197,8 @@ Learn more:
 Okay, so what we've seen so far is pretty dull. But it's necessary
 to know it, to get to the fun part -- which we have finally reached.
 
-If the classes presented so far are the heart of _PHP Tendency_,
-then extensions are the brain, liver, kidney and spleen.
+If randomizers represent the heart of _PHP Tendency_,
+then extensions represent the brain, liver, kidney and spleen.
 _PHP Tendency_ makes only limited sense without them.
 
 ### The idea
@@ -209,7 +215,7 @@ or not, then having a criminal history should sway the mean towards
 1, increasing the likelihood of that outcome.
 
 The ultimate purpose of extensions is to sway the mean in negative
-or positive direction, thus affecting the final outcome.
+or positive direction, creating bias towards a specific outcome.
 
 ### Creating an extension
 
@@ -226,13 +232,13 @@ class SimpleExtension implements Extension
 }
 ````
 
-There are a few things to pay attention to.
+There are a few things to note down:
 
-- The class must implement ``Extension`` interface.
+- The extension class must implement the ``Extension`` interface.
 - Every method that must be accessible through the randomizer, must have the
   ``#[Expose]`` attribute.
-- The first argument of an exposed method must be ``Extendable``. 
-  This is the randomizer instance which will be injected.
+- The first argument of an exposed method must be the randomizer (``Extendable``).
+  The randomizer instance which will be injected, when the method is called.
 - Exposed methods must return ``Extendable`` (i.e. the randomizer).
 
 > You can explore ``ExtensionTest`` for a real-life example.
@@ -261,21 +267,27 @@ What happens in this particular example, is that the randomizer's
 mean value (which starts at ``0.5``) is increased by ``0.3``,
  to ``0.8``.
 
-When this mean is applied in the ``RandomFloat`` with min/max at
-50 to 75, it means the most likely outcome is a number in the
-higher end, probably around 70.
+That in effect means that ``RandomFloat`` with min/max at
+50 to 75, is more likely to produce a number around 70, because
+we have shifted the bias.
 
 Notice a lot of "maybe" and "probably". This is because we use
 biased randomization with standard distribution. No outcome
-is completely guaranteed, which is exactly what we want: A tendency.
+is completely guaranteed, which is exactly what we want: _A tendency_.
+
+A person with a criminal history may have a _tendency_ to commit
+crime, but they don't _always_ do it.
 
 ### Tip
 
 Extensions can themselves take parameters. In our crime determination
-example, we would for instance provide the person and maybe his/her
-criminal history as constructor arguments.
+example, we would for instance provide information about the person
+as constructor arguments.
 
-## 💝 About the project
+## 💝 Working on the project
+
+This information is good to know if you want to fork the
+repository, or even contribute to the original.
 
 ### Testing
 
@@ -287,5 +299,5 @@ composer test
 
 ### Linting
 
-Linting is prepared for Laravel Pint. Point your IDE to use
-the file ``pint.json``.
+Linting is carried out with **Laravel Pint**.
+Point your IDE to use the file ``pint.json``.

@@ -14,8 +14,8 @@ interface Extendable
     /**
      * Change the mean in a positive or negative direction.
      *
-     * @param  float $by
-     * @return self
+     * @param  float $by Add to, or subtract, from the mean
+     * @return self  The randomizer itself
      */
     public function changeMean(float $by): self;
 }

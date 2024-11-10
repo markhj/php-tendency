@@ -14,7 +14,6 @@ use Markhj\PhpTendency\Utilities\RandomizedResult;
 
 abstract class RandomBase implements Extendable
 {
-
     /**
      * Mean generally should be between 0 and 1.
      * However, this isn't strictly enforced, because there are scenarios
@@ -112,12 +111,10 @@ abstract class RandomBase implements Extendable
      */
     public function extend(Extension $instance): RandomBase
     {
-        // Why is this not in the constructor?
-        // Two reasons:
-        //      - No need to initialize it if no extensions are added
-        //      - But more importantly, if possible, we'd like to avoid
-        //          requiring child classes to reference the parent constructor,
-        //          as that can lead to confusion when forgotten.
+        // Why is this not in the constructor? Two reasons:
+        // 1) No need to initialize it if no extensions are added
+        // 2) But more importantly, if possible, we'd like to avoid requiring child classes
+        // to reference the parent constructor, as that can lead to confusion when forgotten.
         if ($this->extensionRegistry === null) {
             $this->extensionRegistry = new ExtensionRegistry();
         }
@@ -129,27 +126,45 @@ abstract class RandomBase implements Extendable
 
         foreach ($class->getMethods() as $method) {
             foreach ($method->getAttributes() as $attribute) {
-                if ($attribute->getName() === Expose::class) {
-                    // The first argument of an exposed method must take an instance of ``Extendable``,
-                    // because the instance of this class will be injected, such that the ``changeMean``
-                    // method can be accessed.
-                    if ($method->getParameters()[0]?->getType()->getName() !==
-                            Extendable::class) {
-                        throw new InvalidFirstArgumentException();
-                    }
-
-                    // Method must return the ``Extendable``.
-                    if ($method->getReturnType()->getName() !== Extendable::class) {
-                        throw new InvalidReturnTypeException();
-                    }
-
-                    // Register this method as exposed.
-                    $this->extensionRegistry->expose($instance, $method->getName());
+                if ($attribute->getName() !== Expose::class) {
+                    continue;
                 }
+
+                $this->registerExposedMethod($instance, $method);
             }
         }
 
         return $this;
+    }
+
+    /**
+     * Helper method to register an exposed method.
+     *
+     * @param  Extension                     $instance The extension instance
+     * @param  \ReflectionMethod             $method   Method information from ReflectionMethod
+     * @return void
+     * @throws InvalidFirstArgumentException
+     * @throws InvalidReturnTypeException
+     */
+    private function registerExposedMethod(
+        Extension $instance,
+        \ReflectionMethod $method,
+    ): void {
+        // The first argument of an exposed method must take an instance of ``Extendable``,
+        // because the instance of this class will be injected, such that the ``changeMean``
+        // method can be accessed.
+        if ($method->getParameters()[0]?->getType()->getName() !==
+            Extendable::class) {
+            throw new InvalidFirstArgumentException();
+        }
+
+        // Method must return the ``Extendable``.
+        if ($method->getReturnType()->getName() !== Extendable::class) {
+            throw new InvalidReturnTypeException();
+        }
+
+        // Register this method as exposed.
+        $this->extensionRegistry->expose($instance, $method->getName());
     }
 
     /**
